@@ -1,0 +1,39 @@
+﻿<Window x:Class="MediaReign.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="628" Width="874">
+	
+	<Window.Resources>
+		<Style TargetType="TextBlock" x:Key="StatusBarTextBlock">
+			<Setter Property="TextWrapping" Value="NoWrap" />
+			<Setter Property="TextTrimming" Value="CharacterEllipsis" />
+			<Setter Property="Padding" Value="2,0" />
+		</Style>
+	</Window.Resources>
+	
+    <Grid>
+		<Button Content="Find Shows" Height="23" HorizontalAlignment="Left" Margin="12,12,0,0" Name="findBtn" VerticalAlignment="Top" Width="75" Click="findBtn_Click" />
+		<ListView Height="525" HorizontalAlignment="Left" Margin="12,52,0,0" Name="foldersLst" VerticalAlignment="Top" Width="828">
+			<ListView.View>
+				<GridView>
+					<GridViewColumn Header="Folder" DisplayMemberBinding="{Binding Folder}" Width="200" />
+					<GridViewColumn Header="Show Name" Width="200">
+						<GridViewColumn.CellTemplate>
+							<DataTemplate>
+								<ComboBox ItemsSource="{Binding Results}" DisplayMemberPath="Name" Width="150" SelectedIndex="0" />
+							</DataTemplate>
+						</GridViewColumn.CellTemplate>
+					</GridViewColumn>
+				</GridView>
+			</ListView.View>
+		</ListView>
+
+		<Border Name="statusBar" Visibility="Hidden" BorderBrush="Silver" BorderThickness="1" Background="#FFEFEFE8" Width="400" Padding="5" Height="50">
+			<DockPanel>	
+				<TextBlock DockPanel.Dock="Top" Name="statusTb" Height="17" Style="{StaticResource StatusBarTextBlock}">Downloading:</TextBlock>
+				<ProgressBar DockPanel.Dock="Top" Height="12" Name="progressBar" />
+			</DockPanel>
+		</Border>
+
+	</Grid>
+</Window>

@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaReign", "MediaReign\MediaReign.csproj", "{01BC2969-7B92-44DC-8956-DCF0FD239C0F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TvDb", "TvDb\TvDb.csproj", "{B825AA41-99D4-4856-8BC1-F72D8FFBEF15}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{01BC2969-7B92-44DC-8956-DCF0FD239C0F}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{01BC2969-7B92-44DC-8956-DCF0FD239C0F}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{01BC2969-7B92-44DC-8956-DCF0FD239C0F}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{01BC2969-7B92-44DC-8956-DCF0FD239C0F}.Debug|x86.ActiveCfg = Debug|x86
+		{01BC2969-7B92-44DC-8956-DCF0FD239C0F}.Debug|x86.Build.0 = Debug|x86
+		{01BC2969-7B92-44DC-8956-DCF0FD239C0F}.Release|Any CPU.ActiveCfg = Release|x86
+		{01BC2969-7B92-44DC-8956-DCF0FD239C0F}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{01BC2969-7B92-44DC-8956-DCF0FD239C0F}.Release|Mixed Platforms.Build.0 = Release|x86
+		{01BC2969-7B92-44DC-8956-DCF0FD239C0F}.Release|x86.ActiveCfg = Release|x86
+		{01BC2969-7B92-44DC-8956-DCF0FD239C0F}.Release|x86.Build.0 = Release|x86
+		{B825AA41-99D4-4856-8BC1-F72D8FFBEF15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B825AA41-99D4-4856-8BC1-F72D8FFBEF15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B825AA41-99D4-4856-8BC1-F72D8FFBEF15}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B825AA41-99D4-4856-8BC1-F72D8FFBEF15}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B825AA41-99D4-4856-8BC1-F72D8FFBEF15}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B825AA41-99D4-4856-8BC1-F72D8FFBEF15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B825AA41-99D4-4856-8BC1-F72D8FFBEF15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B825AA41-99D4-4856-8BC1-F72D8FFBEF15}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B825AA41-99D4-4856-8BC1-F72D8FFBEF15}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{B825AA41-99D4-4856-8BC1-F72D8FFBEF15}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

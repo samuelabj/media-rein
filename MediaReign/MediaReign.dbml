@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Database Name="MediaReign" Class="MediaReignDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Table Name="Files">
+    <Type Name="File">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Path" Type="System.String" DbType="NText NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Column Name="ShowId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Files_History_Files" Member="Files_Histories" ThisKey="Id" OtherKey="FileId" Type="Files_History" DeleteRule="NO ACTION" />
+      <Association Name="Files_Shows" Member="Show" ThisKey="ShowId" OtherKey="Id" Type="Show" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="Files_History" Member="Files_Histories">
+    <Type Name="Files_History">
+      <Column Name="FileId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Path" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="Date" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Association Name="Files_History_Files" Member="File" ThisKey="FileId" OtherKey="Id" Type="File" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="Shows">
+    <Type Name="Show">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Path" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Association Name="Files_Shows" Member="Files" ThisKey="Id" OtherKey="ShowId" Type="File" DeleteRule="NO ACTION" />
+    </Type>
+  </Table>
+</Database>
