@@ -61,7 +61,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainWindow.xaml">
+    <Compile Include="Settings.cs" />
+    <Page Include="FindSeries.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -70,8 +71,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataHelper.cs" />
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="FindSeries.xaml.cs">
+      <DependentUpon>FindSeries.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

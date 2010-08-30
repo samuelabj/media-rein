@@ -33,9 +33,12 @@ namespace MediaReign
     partial void InsertFile(File instance);
     partial void UpdateFile(File instance);
     partial void DeleteFile(File instance);
-    partial void InsertShow(Show instance);
-    partial void UpdateShow(Show instance);
-    partial void DeleteShow(Show instance);
+    partial void InsertSeries(Series instance);
+    partial void UpdateSeries(Series instance);
+    partial void DeleteSeries(Series instance);
+    partial void InsertSetting(Setting instance);
+    partial void UpdateSetting(Setting instance);
+    partial void DeleteSetting(Setting instance);
     #endregion
 		
 		public MediaReignDataContext(string connection) : 
@@ -78,11 +81,19 @@ namespace MediaReign
 			}
 		}
 		
-		public System.Data.Linq.Table<Show> Shows
+		public System.Data.Linq.Table<Series> Series
 		{
 			get
 			{
-				return this.GetTable<Show>();
+				return this.GetTable<Series>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Setting> Settings
+		{
+			get
+			{
+				return this.GetTable<Setting>();
 			}
 		}
 	}
@@ -95,11 +106,11 @@ namespace MediaReign
 		
 		private int _Id;
 		
+		private System.Nullable<int> _SeriesId;
+		
 		private string _Path;
 		
-		private int _ShowId;
-		
-		private EntityRef<Show> _Show;
+		private EntityRef<Series> _Series;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -107,15 +118,15 @@ namespace MediaReign
     partial void OnCreated();
     partial void OnIdChanging(int value);
     partial void OnIdChanged();
+    partial void OnSeriesIdChanging(System.Nullable<int> value);
+    partial void OnSeriesIdChanged();
     partial void OnPathChanging(string value);
     partial void OnPathChanged();
-    partial void OnShowIdChanging(int value);
-    partial void OnShowIdChanged();
     #endregion
 		
 		public File()
 		{
-			this._Show = default(EntityRef<Show>);
+			this._Series = default(EntityRef<Series>);
 			OnCreated();
 		}
 		
@@ -139,7 +150,31 @@ namespace MediaReign
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Path", DbType="NText NOT NULL", CanBeNull=false, UpdateCheck=UpdateCheck.Never)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SeriesId", DbType="Int")]
+		public System.Nullable<int> SeriesId
+		{
+			get
+			{
+				return this._SeriesId;
+			}
+			set
+			{
+				if ((this._SeriesId != value))
+				{
+					if (this._Series.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnSeriesIdChanging(value);
+					this.SendPropertyChanging();
+					this._SeriesId = value;
+					this.SendPropertyChanged("SeriesId");
+					this.OnSeriesIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Path", DbType="NVarChar(500)")]
 		public string Path
 		{
 			get
@@ -159,60 +194,36 @@ namespace MediaReign
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ShowId", DbType="Int NOT NULL")]
-		public int ShowId
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Series_File", Storage="_Series", ThisKey="SeriesId", OtherKey="Id", IsForeignKey=true)]
+		public Series Series
 		{
 			get
 			{
-				return this._ShowId;
+				return this._Series.Entity;
 			}
 			set
 			{
-				if ((this._ShowId != value))
-				{
-					if (this._Show.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnShowIdChanging(value);
-					this.SendPropertyChanging();
-					this._ShowId = value;
-					this.SendPropertyChanged("ShowId");
-					this.OnShowIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Show_File", Storage="_Show", ThisKey="ShowId", OtherKey="Id", IsForeignKey=true)]
-		public Show Show
-		{
-			get
-			{
-				return this._Show.Entity;
-			}
-			set
-			{
-				Show previousValue = this._Show.Entity;
+				Series previousValue = this._Series.Entity;
 				if (((previousValue != value) 
-							|| (this._Show.HasLoadedOrAssignedValue == false)))
+							|| (this._Series.HasLoadedOrAssignedValue == false)))
 				{
 					this.SendPropertyChanging();
 					if ((previousValue != null))
 					{
-						this._Show.Entity = null;
+						this._Series.Entity = null;
 						previousValue.Files.Remove(this);
 					}
-					this._Show.Entity = value;
+					this._Series.Entity = value;
 					if ((value != null))
 					{
 						value.Files.Add(this);
-						this._ShowId = value.Id;
+						this._SeriesId = value.Id;
 					}
 					else
 					{
-						this._ShowId = default(int);
+						this._SeriesId = default(Nullable<int>);
 					}
-					this.SendPropertyChanged("Show");
+					this.SendPropertyChanged("Series");
 				}
 			}
 		}
@@ -244,9 +255,9 @@ namespace MediaReign
 		
 		private System.Nullable<int> _FileId;
 		
-		private string _Path;
-		
 		private System.DateTime _Date;
+		
+		private string _Path;
 		
 		public Files_History()
 		{
@@ -268,22 +279,6 @@ namespace MediaReign
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Path", DbType="NText", UpdateCheck=UpdateCheck.Never)]
-		public string Path
-		{
-			get
-			{
-				return this._Path;
-			}
-			set
-			{
-				if ((this._Path != value))
-				{
-					this._Path = value;
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Date", DbType="DateTime NOT NULL")]
 		public System.DateTime Date
 		{
@@ -299,10 +294,26 @@ namespace MediaReign
 				}
 			}
 		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Path", DbType="NVarChar(500)")]
+		public string Path
+		{
+			get
+			{
+				return this._Path;
+			}
+			set
+			{
+				if ((this._Path != value))
+				{
+					this._Path = value;
+				}
+			}
+		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="Shows")]
-	public partial class Show : INotifyPropertyChanging, INotifyPropertyChanged
+	[global::System.Data.Linq.Mapping.TableAttribute()]
+	public partial class Series : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
@@ -310,6 +321,8 @@ namespace MediaReign
 		private int _Id;
 		
 		private string _Name;
+		
+		private System.Nullable<int> _TvDbId;
 		
 		private string _Path;
 		
@@ -323,11 +336,13 @@ namespace MediaReign
     partial void OnIdChanged();
     partial void OnNameChanging(string value);
     partial void OnNameChanged();
+    partial void OnTvDbIdChanging(System.Nullable<int> value);
+    partial void OnTvDbIdChanged();
     partial void OnPathChanging(string value);
     partial void OnPathChanged();
     #endregion
 		
-		public Show()
+		public Series()
 		{
 			this._Files = new EntitySet<File>(new Action<File>(this.attach_Files), new Action<File>(this.detach_Files));
 			OnCreated();
@@ -353,7 +368,7 @@ namespace MediaReign
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(400) NOT NULL", CanBeNull=false)]
 		public string Name
 		{
 			get
@@ -373,7 +388,27 @@ namespace MediaReign
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Path", DbType="NText", UpdateCheck=UpdateCheck.Never)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TvDbId", DbType="Int")]
+		public System.Nullable<int> TvDbId
+		{
+			get
+			{
+				return this._TvDbId;
+			}
+			set
+			{
+				if ((this._TvDbId != value))
+				{
+					this.OnTvDbIdChanging(value);
+					this.SendPropertyChanging();
+					this._TvDbId = value;
+					this.SendPropertyChanged("TvDbId");
+					this.OnTvDbIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Path", DbType="NVarChar(500)")]
 		public string Path
 		{
 			get
@@ -393,7 +428,7 @@ namespace MediaReign
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Show_File", Storage="_Files", ThisKey="Id", OtherKey="ShowId")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Series_File", Storage="_Files", ThisKey="Id", OtherKey="SeriesId")]
 		public EntitySet<File> Files
 		{
 			get
@@ -429,13 +464,99 @@ namespace MediaReign
 		private void attach_Files(File entity)
 		{
 			this.SendPropertyChanging();
-			entity.Show = this;
+			entity.Series = this;
 		}
 		
 		private void detach_Files(File entity)
 		{
 			this.SendPropertyChanging();
-			entity.Show = null;
+			entity.Series = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="Settings")]
+	public partial class Setting : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private string _Key;
+		
+		private string _Value;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnKeyChanging(string value);
+    partial void OnKeyChanged();
+    partial void OnValueChanging(string value);
+    partial void OnValueChanged();
+    #endregion
+		
+		public Setting()
+		{
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Key", DbType="NVarChar(4000) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
+		public string Key
+		{
+			get
+			{
+				return this._Key;
+			}
+			set
+			{
+				if ((this._Key != value))
+				{
+					this.OnKeyChanging(value);
+					this.SendPropertyChanging();
+					this._Key = value;
+					this.SendPropertyChanged("Key");
+					this.OnKeyChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Value", DbType="NText", UpdateCheck=UpdateCheck.Never)]
+		public string Value
+		{
+			get
+			{
+				return this._Value;
+			}
+			set
+			{
+				if ((this._Value != value))
+				{
+					this.OnValueChanging(value);
+					this.SendPropertyChanging();
+					this._Value = value;
+					this.SendPropertyChanged("Value");
+					this.OnValueChanged();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
 		}
 	}
 }

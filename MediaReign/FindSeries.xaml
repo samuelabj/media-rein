@@ -1,7 +1,7 @@
-﻿<Window x:Class="MediaReign.MainWindow"
+﻿<Window x:Class="MediaReign.FindSeries"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="628" Width="874">
+        Title="FindSeries" Height="628" Width="874">
 	
 	<Window.Resources>
 		<Style TargetType="TextBlock" x:Key="StatusBarTextBlock">
@@ -13,14 +13,19 @@
 	
     <Grid>
 		<Button Content="Find Shows" Height="23" HorizontalAlignment="Left" Margin="12,12,0,0" Name="findBtn" VerticalAlignment="Top" Width="75" Click="findBtn_Click" />
-		<ListView Height="525" HorizontalAlignment="Left" Margin="12,52,0,0" Name="foldersLst" VerticalAlignment="Top" Width="828">
+		<ListView VirtualizingStackPanel.IsVirtualizing="False" HorizontalAlignment="Stretch" Margin="12,52,12,52" Name="foldersLst" VerticalAlignment="Stretch">
+			<ListView.ItemContainerStyle>
+				<Style TargetType="ListViewItem">
+					<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+				</Style>
+			</ListView.ItemContainerStyle>
 			<ListView.View>
 				<GridView>
-					<GridViewColumn Header="Folder" DisplayMemberBinding="{Binding Folder}" Width="200" />
-					<GridViewColumn Header="Show Name" Width="200">
+					<GridViewColumn Header="Folder" DisplayMemberBinding="{Binding Key.Name}" Width="200" />
+					<GridViewColumn Header="Show Name" Width="300">
 						<GridViewColumn.CellTemplate>
 							<DataTemplate>
-								<ComboBox ItemsSource="{Binding Results}" DisplayMemberPath="Name" Width="150" SelectedIndex="0" />
+								<ComboBox Name="results" ItemsSource="{Binding Value}" DisplayMemberPath="Name" SelectedIndex="0" />
 							</DataTemplate>
 						</GridViewColumn.CellTemplate>
 					</GridViewColumn>
@@ -34,6 +39,6 @@
 				<ProgressBar DockPanel.Dock="Top" Height="12" Name="progressBar" />
 			</DockPanel>
 		</Border>
-
+		<Button Content="Add Shows" Height="23" HorizontalAlignment="Right" Margin="0,0,10,10" Name="addBtn" VerticalAlignment="Bottom" Width="75" Click="addBtn_Click" />
 	</Grid>
 </Window>
