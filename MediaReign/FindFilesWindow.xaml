@@ -1,0 +1,15 @@
+﻿<Window x:Class="MediaReign.FindFilesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="FindFilesWindow" Height="322" Width="903">
+    <Grid>
+		<ListView HorizontalAlignment="Stretch" Margin="0" Name="filesLst" VerticalAlignment="Stretch">
+			<ListView.View>
+				<GridView>
+					<GridViewColumn Header="Original" DisplayMemberBinding="{Binding Original}" Width="200" />
+					<GridViewColumn Header="New" Width="300" DisplayMemberBinding="{Binding New}" />
+				</GridView>
+			</ListView.View>
+		</ListView>
+	</Grid>
+</Window>

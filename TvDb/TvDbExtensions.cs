@@ -20,7 +20,7 @@ namespace TvDb {
 
 		public static T Get<T>(this XElement parent, string name, T defaultValue) {
 			var val = Get<T>(parent, name);
-			if(val.Equals(default(T))) return defaultValue;
+			if(EqualityComparer<T>.Default.Equals(val, default(T))) return defaultValue;
 			return val;
 		}
 

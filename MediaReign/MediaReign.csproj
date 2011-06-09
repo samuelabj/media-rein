@@ -17,7 +17,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -61,8 +61,22 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DiscoverWindow.xaml.cs">
+      <DependentUpon>DiscoverWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FindFilesWindow.xaml.cs">
+      <DependentUpon>FindFilesWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Settings.cs" />
-    <Page Include="FindSeries.xaml">
+    <Page Include="DiscoverWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FindFilesWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FindSeriesWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -71,8 +85,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataHelper.cs" />
-    <Compile Include="FindSeries.xaml.cs">
-      <DependentUpon>FindSeries.xaml</DependentUpon>
+    <Compile Include="FindSeriesWindow.xaml.cs">
+      <DependentUpon>FindSeriesWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

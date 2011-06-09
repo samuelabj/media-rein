@@ -5,15 +5,16 @@ using System.Text;
 using System.Net;
 using System.Web;
 using System.Xml.Linq;
+using ICSharpCode.SharpZipLib.Zip;
+using System.IO;
+using System.Diagnostics;
 
 namespace TvDb {
 	public class TvDbRequest {
-		private WebClient web;
 		private string mirror;
 
 		public TvDbRequest(string api) {
 			Api = api;
-			web = new WebClient();
 		}
 
 		public string Api { get; set; }
@@ -46,8 +47,8 @@ namespace TvDb {
 		}
 
 		public TvDbSeries Series(int id, string language) {
-			var xml = DownloadXml("{0}/series/{1}/all/{2}", Api, id, language);
-
+			var xml = DownloadXml("{0}/series/{1}/all/{2}.zip", true, Api, id, language);
+			
 			var results = from series in xml.Descendants("Series")
 						  where series.HasElements
 						  select new TvDbSeries {
@@ -73,35 +74,56 @@ namespace TvDb {
 							  PosterPath = series.Get("poster"),
 							  Zap2ItId = series.Get("zap2it_id"),
 
-							  Episodes = (from ep in series.Descendants("Episodes")
-										 where ep.HasElements
-										 select new TvDbEpisode {
-											 Id = ep.Get<int>("id"),
-											 Directors = ep.Split("Director"),
-											 Name = ep.Get("EpisodeName"),
-											 Number = ep.Get<int>("EpisodeNumber"),
-											 Aired = ep.Get<DateTime>("FirstAired"),
-											 GuestStars = ep.Split("GuestStars"),
-											 ImDbId = ep.Get("IMDB_ID"),
-											 Language = ep.Get("Language"),
-											 Overview = ep.Get("Overview"),
-											 Season = ep.Get<int>("SeasonNumber"),
-											 Writers = ep.Split("Writer"),
-											 AbsoluteNumber = ep.Get<int>("absolute_number"),
-											 Filename = ep.Get("filename"),
-											 LastUpdated = ep.Get<DateTime>("lastupdated"),
-											 SeasonId = ep.Get<int>("seasonid"),
-											 SeriesId = ep.Get<int>("seriesId")
-										 })
-										 .ToList()
+							  Episodes = (from ep in xml.Descendants("Episode")
+							             where ep.HasElements
+							             select new TvDbEpisode {
+							                 Id = ep.Get<int>("id"),
+							                 Directors = ep.Split("Director"),
+							                 Name = ep.Get("EpisodeName"),
+							                 Number = ep.Get<int>("EpisodeNumber"),
+							                 Aired = ep.Get<DateTime>("FirstAired"),
+							                 GuestStars = ep.Split("GuestStars"),
+							                 ImDbId = ep.Get("IMDB_ID"),
+							                 Language = ep.Get("Language"),
+							                 Overview = ep.Get("Overview"),
+							                 Season = ep.Get<int>("SeasonNumber"),
+							                 Writers = ep.Split("Writer"),
+							                 AbsoluteNumber = ep.Get<int>("absolute_number"),
+							                 Filename = ep.Get("filename"),
+							                 LastUpdated = ep.Get<DateTime>("lastupdated"),
+							                 SeasonId = ep.Get<int>("seasonid"),
+							                 SeriesId = ep.Get<int>("seriesId")
+							             })
+							             .ToList()
 						  };
 
 			return results.Single();
 		}
 
+		private XDocument DownloadXml(string request, bool zip, params object[] args) {
+			if(zip) {
+				var data = DownloadZip(request, args);
+				return XDocument.Parse(Encoding.UTF8.GetString(data));
+			} else {
+				var data = new WebClient().DownloadString(BuildRequestPath(request, args));
+				return XDocument.Parse(data);
+			}
+		}
+
 		private XDocument DownloadXml(string request, params object[] args) {
-			var data = web.DownloadString(BuildRequestPath(request, args));
-			return XDocument.Parse(data);
+			return DownloadXml(request, false, args);
+		}
+
+		private byte[] DownloadZip(string request, params object[] args) {
+			var data = new WebClient().DownloadData(BuildRequestPath(request, args));
+
+			using(var zip = new ZipInputStream(new MemoryStream(data))) {
+				zip.GetNextEntry();
+				var buffer = new byte[zip.Length];
+				zip.Read(buffer, 0, buffer.Length);
+
+				return buffer;
+			}
 		}
 
 		private string BuildRequestPath(string request, params object[] args) {

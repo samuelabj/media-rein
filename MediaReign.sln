@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaReign", "MediaReign\Me
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TvDb", "TvDb\TvDb.csproj", "{B825AA41-99D4-4856-8BC1-F72D8FFBEF15}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaReign.Tests", "MediaReign.Tests\MediaReign.Tests.csproj", "{A5AC23B4-2948-4BD1-802E-F1BF689DADD5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,16 @@ Global
 		{B825AA41-99D4-4856-8BC1-F72D8FFBEF15}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{B825AA41-99D4-4856-8BC1-F72D8FFBEF15}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{B825AA41-99D4-4856-8BC1-F72D8FFBEF15}.Release|x86.ActiveCfg = Release|Any CPU
+		{A5AC23B4-2948-4BD1-802E-F1BF689DADD5}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{A5AC23B4-2948-4BD1-802E-F1BF689DADD5}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{A5AC23B4-2948-4BD1-802E-F1BF689DADD5}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{A5AC23B4-2948-4BD1-802E-F1BF689DADD5}.Debug|x86.ActiveCfg = Debug|x86
+		{A5AC23B4-2948-4BD1-802E-F1BF689DADD5}.Debug|x86.Build.0 = Debug|x86
+		{A5AC23B4-2948-4BD1-802E-F1BF689DADD5}.Release|Any CPU.ActiveCfg = Release|x86
+		{A5AC23B4-2948-4BD1-802E-F1BF689DADD5}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{A5AC23B4-2948-4BD1-802E-F1BF689DADD5}.Release|Mixed Platforms.Build.0 = Release|x86
+		{A5AC23B4-2948-4BD1-802E-F1BF689DADD5}.Release|x86.ActiveCfg = Release|x86
+		{A5AC23B4-2948-4BD1-802E-F1BF689DADD5}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

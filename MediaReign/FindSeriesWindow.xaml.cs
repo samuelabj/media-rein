@@ -23,9 +23,9 @@ namespace MediaReign {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
-	public partial class FindSeries : Window {
+	public partial class FindSeriesWindow : Window {
 
-		public FindSeries() {
+		public FindSeriesWindow() {
 			InitializeComponent();
 		}
 
@@ -38,35 +38,40 @@ namespace MediaReign {
 
 				var worker = new BackgroundWorker();
 				worker.WorkerReportsProgress = true;
-				worker.DoWork += new DoWorkEventHandler(worker_DoWork);
+				worker.DoWork += new DoWorkEventHandler(Download_DoWork);
 				worker.ProgressChanged += new ProgressChangedEventHandler(worker_ProgressChanged);
-				worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(worker_RunWorkerCompleted);
+				
+				worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler((o, ex) => {
+					statusBar.Visibility = System.Windows.Visibility.Hidden;
+					var data = ex.Result as Dictionary<DirectoryInfo, LinkedList<TvDbSearchResult>>;
+					foldersLst.ItemsSource = data;
+				});
+
 				worker.RunWorkerAsync(dialog.SelectedPath);
 			}
 		}
 
-		void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-			statusBar.Visibility = System.Windows.Visibility.Hidden;
-			var data = e.Result as Dictionary<DirectoryInfo, LinkedList<TvDbSearchResult>>;
-
-			foldersLst.ItemsSource = data;
-		}
-
-		void worker_DoWork(object sender, DoWorkEventArgs e) {
+		void Download_DoWork(object sender, DoWorkEventArgs e) {
 			var worker = sender as BackgroundWorker;
 			var tvdb = new TvDbRequest("A1DA4CF74415C72E");
 			var root = new DirectoryInfo(e.Argument as string);
 
 			var i = 0;
-			var dirs = root.GetDirectories();
+			var dirs = root.GetDirectories().Take(1);
 			var data = new Dictionary<DirectoryInfo, LinkedList<TvDbSearchResult>>();
 
 			using(var db = DataHelper.Context()) {
 				foreach(var dir in dirs) {
-					if(db.Series.Any(s => s.Path == dir.FullName)) continue;
-					var results = tvdb.Search(dir.Name, "en");
-					data.Add(dir, results);
-					worker.ReportProgress((int)(i++ / (double)dirs.Count() * 100), dir.Name);
+					if(!db.Series.Any(s => s.Path == dir.FullName)) {
+						worker.ReportProgress((int)(i / (double)dirs.Count() * 100), "Downloading: " + dir.Name);
+
+						LinkedList<TvDbSearchResult> results = new LinkedList<TvDbSearchResult>();
+						try {
+							results = tvdb.Search(dir.Name, "en");
+						} catch { }
+						data.Add(dir, results);				
+					}
+					i++;
 				}
 			}
 
@@ -75,7 +80,7 @@ namespace MediaReign {
 
 		void worker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
 			progressBar.Value = e.ProgressPercentage;
-			statusTb.Text = "Downloading: " + e.UserState as string;
+			statusTb.Text = e.UserState as string;
 		}
 
 		private void addBtn_Click(object sender, RoutedEventArgs e) {
@@ -89,38 +94,22 @@ namespace MediaReign {
 					var dir = item.Key;
 
 					if(result != null) {
-						IEnumerable<File> files;
-						var seasons = dir.GetDirectories("Season*");
-						if(seasons.Any()) { 
-							files = (from sn in seasons
-									select (from f in sn.GetFiles()
-											where Settings.MediaExtensions.Contains(f.Extension)
-											select new File {
-												Path = f.FullName,
-											}))
-											.SelectMany(f => f);
-						} else {
-							files = from f in dir.GetFiles()
-									where Settings.MediaExtensions.Contains(f.Extension)
-									select new File {
-										Path = f.FullName,
-									};
-						}
-
 						var sr = new Series {
 							Name = result.Name,
 							Path = dir.FullName,
 							TvDbId = result.Id
 						};
-						sr.Files.AddRange(files);
-
 						series.Add(sr);
 					}
 				}
 
 				db.Series.InsertAllOnSubmit(series);
 				db.SubmitChanges();
-				MessageBox.Show("Added " + db.Series.Count());
+				MessageBox.Show("Added " + series.Count);
+
+				var find = new FindFilesWindow();
+				find.Show();
+				this.Close();
 			}
 		}
 
