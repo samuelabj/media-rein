@@ -12,8 +12,8 @@ namespace MediaReign.Tests {
 
 		[Fact]
 		public void MatchTvShows() {
-			var matcher = new TvShowMatcher();
-			matcher.RegexRepo = new TvShowRegexRepo();
+			var matcher = new TvMatcher();
+			matcher.RegexRepo = new TvRegexRepo();
 
 			foreach(var show in Helper.Shows) {
 				var match = matcher.Match(show.File);
