@@ -48,6 +48,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MediaReign\MediaReign.csproj">
+      <Project>{01BC2969-7B92-44DC-8956-DCF0FD239C0F}</Project>
+      <Name>MediaReign</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TvDb\TvDb.csproj">
       <Project>{B825AA41-99D4-4856-8BC1-F72D8FFBEF15}</Project>
       <Name>TvDb</Name>

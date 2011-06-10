@@ -67,6 +67,9 @@
     <Compile Include="FindFilesWindow.xaml.cs">
       <DependentUpon>FindFilesWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\RegexRepo.cs" />
+    <Compile Include="Models\TvShowMatch.cs" />
+    <Compile Include="Models\TvShowMatcher.cs" />
     <Compile Include="Settings.cs" />
     <Page Include="DiscoverWindow.xaml">
       <SubType>Designer</SubType>
