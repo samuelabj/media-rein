@@ -13,16 +13,16 @@ namespace MediaReign.Tests {
 		[Fact]
 		public void MatchTvShows() {
 			var matcher = new TvShowMatcher();
-			matcher.RegexRepo = new RegexRepo();
+			matcher.RegexRepo = new TvShowRegexRepo();
 
-			foreach(var info in Helper.Files) {
-				var match = matcher.Match(info.File);
-				Assert.Equal(info.IsDummy, match == null);
+			foreach(var show in Helper.Shows) {
+				var match = matcher.Match(show.File);
+				Assert.Equal(show.IsDummy, match == null);
 
 				if(match != null) {
-					Assert.Equal(info.Show, match.Name, StringComparer.OrdinalIgnoreCase);
-					Assert.Equal(info.Season, match.Season);
-					Assert.Equal(info.Episode, match.Episode);
+					Assert.Equal(show.Name, match.Name, StringComparer.OrdinalIgnoreCase);
+					Assert.Equal(show.Season, match.Season);
+					Assert.Equal(show.Episode, match.Episode);
 				}
 			}
 		}

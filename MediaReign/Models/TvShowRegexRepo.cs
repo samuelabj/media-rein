@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 
 namespace MediaReign.Models {
-	public class RegexRepo {
+	public class TvShowRegexRepo : ITvShowRegexRepo {
 		private const string Show = @"^(?<Show>.*?)";
 		private static string[] SeasonEpisode = new[] {
 			@"[\W_]+S(?<Season>\d+)E(?<Episode>\d+)",
@@ -14,7 +14,7 @@ namespace MediaReign.Models {
 			@"[\W_]+?(?<Episode>\d{2})[\W_]"
 		};
 
-		public RegexRepo() {
+		public TvShowRegexRepo() {
 			Separator = new Regex(@"[\W_]");
 			Cleanup = new Regex(@"(^\(.*\))|\[.*?\]");
 			Matches = new LinkedList<Regex>(SeasonEpisode.Select(s => new Regex(Show + s, RegexOptions.IgnoreCase)));

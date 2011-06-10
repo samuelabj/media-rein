@@ -6,7 +6,7 @@ using System.Text;
 namespace MediaReign.Models {
 	public class TvShowMatcher {
 
-		public RegexRepo RegexRepo { get; set; }
+		public ITvShowRegexRepo RegexRepo { get; set; }
 
 		public TvShowMatch Match(string value) {
 			var clean = RegexRepo.Cleanup.Replace(value, String.Empty);

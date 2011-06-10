@@ -8,69 +8,69 @@ namespace MediaReign.Tests {
 		public static string DownloadedPath = @"\\candy-mountain\H\Downloads\Downloaded";
 		public static string ApiKey = "A1DA4CF74415C72E";
 
-		public class FileInfo {
+		public class Show {
 			public string File { get; set; }
-			public string Show { get; set; }
+			public string Name { get; set; }
 			public int? Season { get; set; }
 			public int Episode { get; set; }
 			public bool IsAbsolute { get; set; }
 			public bool IsDummy { get; set; }
 		}
 
-		public static FileInfo[] Files = new[] {
-			new FileInfo {
+		public static Show[] Shows = new[] {
+			new Show {
 				File = @"Come.Fly.With.Me.2010.S01E01.HDTV.XviD-ANGELiC.avi",
-				Show = "Come Fly With Me 2010",
+				Name = "Come Fly With Me 2010",
 				Season = 1,
 				Episode = 1
 			},
-			new FileInfo {
+			new Show {
 				File = @"doctor_who_2005.6x06.the_almost_people.hdtv_xvid-fov.avi",
-				Show = "Doctor Who 2005",
+				Name = "Doctor Who 2005",
 				Season = 6,
 				Episode = 6
 			},
-			new FileInfo { 
+			new Show { 
 				File = @"Game.of.Thrones.S01E07.720p.HDTV.x264-IMMERSE.mkv",
-				Show = "Game of Thrones",
+				Name = "Game of Thrones",
 				Season = 1,
 				Episode = 7
 			},
-			new FileInfo { 
+			new Show { 
 				File = @"Priest.2011.R5.LiNE.AC3.XViD-EP1C.avi",
 				IsDummy = true
 			},
-			new FileInfo { 
+			new Show { 
 				File = @"South.Park.S15E06.City.Sushi.HDTV.XviD-FQM.avi",
-				Show = "South Park",
+				Name = "South Park",
 				Season = 15,
 				Episode = 6
 			},
-			new FileInfo { 
+			new Show { 
 				File = @"Fallout 3.iso",
 				IsDummy = true
 			},
-			new FileInfo { 
+			new Show { 
 				File = @"The.Biggest.Loser.Australia.Families.s06e53.Finale.PDTV.Xvid.avi",
-				Show = "The Biggest Loser Australia Families",
+				Name = "The Biggest Loser Australia Families",
 				Season = 6,
 				Episode = 53
 			},
-			new FileInfo { 
+			new Show { 
 				File = @"[SFW-Chihiro]_Dance_in_the_Vampire_Bund_-_01_[1280x720_Blu-ray_FLAC][48EAB09D].mkv",
-				Show = "Dance in the Vampire Bund",
+				Name = "Dance in the Vampire Bund",
 				Episode = 1,
 				IsAbsolute = true
 			},
-			new FileInfo { 
+			new Show { 
 				File = @"The Private Life of Plants - 01 - Travelling.avi",
-				Show = "The Private Life of Plants",
+				Name = "The Private Life of Plants",
 				Episode = 1,
 				IsAbsolute = true
 			},
-			new FileInfo { 
+			new Show { 
 				File = @"(HBO) The Private Life of Plants - 212 - Travelling.avi",
-				Show = "The Private Life of Plants",
+				Name = "The Private Life of Plants",
 				Season = 2,
 				Episode = 12
 			}
