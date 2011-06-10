@@ -13,6 +13,7 @@ namespace MediaReign.Tests {
 			public string Show { get; set; }
 			public int Season { get; set; }
 			public int Episode { get; set; }
+			public bool IsAbsolute { get; set; }
 			public bool IsDummy { get; set; }
 		}
 
@@ -59,25 +60,34 @@ namespace MediaReign.Tests {
 				File = @"[SFW-Chihiro]_Dance_in_the_Vampire_Bund_-_01_[1280x720_Blu-ray_FLAC][48EAB09D].mkv",
 				Show = "Dance in the Vampire Bund",
 				Season = 0,
-				Episode = 1
+				Episode = 1,
+				IsAbsolute = true
 			},
 			new FileInfo { 
 				File = @"The Private Life of Plants - 01 - Travelling.avi",
 				Show = "The Private Life of Plants",
 				Season = 0,
-				Episode = 1
+				Episode = 1,
+				IsAbsolute = true
+			},
+			new FileInfo { 
+				File = @"(HBO) The Private Life of Plants - 212 - Travelling.avi",
+				Show = "The Private Life of Plants",
+				Season = 2,
+				Episode = 12
 			}
 		};
 
-		public static string FileNameShowRegex = @"^(?<Show>.*?)\D";
+		public static string FileNameShowRegex = @"^(?<Show>.*?)";
 
-		public static string SeperatorRegex = @"\W|_";
-		public static string RemoveRegex = @"\[.*?\]";
+		public static string SeperatorRegex = @"[\W_]";
+		public static string RemoveRegex = @"(^\(.*\))|\[.*?\]";
 
 		public static string[] FileNameSeasonEpisodeRegex = new[] {
-			@"S(?<Season>\d+)E(?<Episode>\d+)",
-			@"(?<Season>\d+)x(?<Episode>\d+)",
-			@"-\D?(?<Episode>\d+)\D?"
+			@"[\W_]+S(?<Season>\d+)E(?<Episode>\d+)",
+			@"[\W_]+(?<Season>\d+)x(?<Episode>\d+)",
+			@"[\W_]+(?<Season>\d{1})(?<Episode>\d{2})[\W_]",
+			@"[\W_]+?(?<Episode>\d{2})[\W_]"
 		};
 	}
 }

@@ -30,9 +30,11 @@ namespace MediaReign.Tests {
 					if(!String.IsNullOrWhiteSpace(season)) {
 						Assert.Equal(info.Season, int.Parse(season));
 						Assert.Equal(info.Episode, int.Parse(episode));
+						Assert.Equal(info.IsAbsolute, false);
 						hasmatch = true;
 					} else if(!String.IsNullOrWhiteSpace(episode)) {
 						Assert.Equal(info.Episode, int.Parse(episode));
+						Assert.Equal(info.IsAbsolute, true);
 						hasmatch = true;
 					}
 				}
