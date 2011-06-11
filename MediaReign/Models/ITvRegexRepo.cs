@@ -5,10 +5,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 
 namespace MediaReign.Models {
-	public interface ITvShowRegexRepo {
-		 LinkedList<Regex> Matches { get; private set; }
-		 Regex Cleanup { get; private set; }
-		 Regex Separator { get; private set; }
+	public interface ITvRegexRepo {
+		 LinkedList<Regex> Matches { get; }
+		 Regex Cleanup { get; }
+		 Regex Separator { get; }
 
 		 string ShowGroup { get; }
 		 string SeasonGroup { get; }

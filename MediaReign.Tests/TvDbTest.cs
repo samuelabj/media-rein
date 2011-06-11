@@ -11,8 +11,8 @@ namespace MediaReign.Tests {
 	public class TvDbTest {
 
 		public void GetEpisodes() {
-			var tvdb = new TvDbRequest(Helper.ApiKey);
-			var root = new DirectoryInfo(Helper.DownloadedPath);
+			//var tvdb = new TvDbRequest(Helper.ApiKey);
+			//var root = new DirectoryInfo(Helper.DownloadedPath);
 		}
 	}
 }

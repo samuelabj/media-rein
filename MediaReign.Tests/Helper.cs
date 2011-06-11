@@ -5,8 +5,6 @@ using System.Text;
 
 namespace MediaReign.Tests {
 	public class Helper {
-		public static string DownloadedPath = @"\\candy-mountain\H\Downloads\Downloaded";
-		public static string ApiKey = "A1DA4CF74415C72E";
 
 		public class Show {
 			public string File { get; set; }
@@ -73,6 +71,10 @@ namespace MediaReign.Tests {
 				Name = "The Private Life of Plants",
 				Season = 2,
 				Episode = 12
+			},
+			new Show {
+				File = @"Spriggan.1998.x264.BDRip(720)_HDClub.mkv",
+				IsDummy = true
 			}
 		};
 	}

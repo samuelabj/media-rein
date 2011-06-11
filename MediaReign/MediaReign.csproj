@@ -64,34 +64,21 @@
     <Compile Include="DiscoverWindow.xaml.cs">
       <DependentUpon>DiscoverWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FindFilesWindow.xaml.cs">
-      <DependentUpon>FindFilesWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Models\RegexRepo.cs" />
-    <Compile Include="Models\TvShowMatch.cs" />
-    <Compile Include="Models\TvShowMatcher.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Models\ITvRegexRepo.cs" />
+    <Compile Include="Models\TvRegexRepo.cs" />
+    <Compile Include="Models\TvMatch.cs" />
+    <Compile Include="Models\TvMatcher.cs" />
     <Compile Include="Settings.cs" />
     <Page Include="DiscoverWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="FindFilesWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="FindSeriesWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataHelper.cs" />
-    <Compile Include="FindSeriesWindow.xaml.cs">
-      <DependentUpon>FindSeriesWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MediaReign.designer.cs">

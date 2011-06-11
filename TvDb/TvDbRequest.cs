@@ -12,6 +12,7 @@ using System.Diagnostics;
 namespace TvDb {
 	public class TvDbRequest {
 		private string mirror;
+		private const string language = "en";
 
 		public TvDbRequest(string api) {
 			Api = api;
@@ -28,14 +29,14 @@ namespace TvDb {
 			}
 		}
 
-		public LinkedList<TvDbSearchResult> Search(string name, string language) {
+		public LinkedList<TvDbSearchResult> Search(string name) {
 			var xml = DownloadXml("GetSeries.php?seriesname={0}&language={1}", name, language);
 
 			var results = from series in xml.Descendants("Series")
 						  where series.HasElements
 						  select new TvDbSearchResult {
-							  Id = series.Get<int>("seriesid"),
-							  Aired = series.Get<DateTime>("FirstAired"),
+							  Id = series.GetInt("seriesid"),
+							  Aired = series.GetDateTime("FirstAired"),
 							  Language = series.Get("language"),
 							  Overview = series.Get("Overview"),
 							  Name = series.Get("SeriesName"),
@@ -46,53 +47,53 @@ namespace TvDb {
 			return new LinkedList<TvDbSearchResult>(results);
 		}
 
-		public TvDbSeries Series(int id, string language) {
-			var xml = DownloadXml("{0}/series/{1}/all/{2}.zip", true, Api, id, language);
+		public TvDbSeries Series(int id, bool zip) {
+			var xml = DownloadXml("{0}/series/{1}/all/{2}", zip, Api, id, language);
 			
 			var results = from series in xml.Descendants("Series")
 						  where series.HasElements
 						  select new TvDbSeries {
-							  Id = series.Get<int>("id"),
+							  Id = series.GetInt("id"),
 							  Actors = series.Split("Actors"),
 							  AirsDay = series.Get<DayOfWeek>("Airs_DayOfWeek"),
-							  AirsTime = series.Get<DateTime>("Airs_Time"),
+							  AirsTime = series.GetDateTime("Airs_Time"),
 							  ContentRating = series.Get("ContentRating"),
-							  FirstAired = series.Get<DateTime>("FirstAired"),
+							  FirstAired = series.GetDateTime("FirstAired"),
 							  Genre = series.Split("Genre"),
 							  IMDbId = series.Get("IMDB_ID"),
 							  Language = series.Get("Language"),
 							  Network = series.Get("Network"),
 							  Overview = series.Get("Overview"),
-							  Rating = series.Get<double>("Rating"),
-							  Runtime = series.Get<double>("Runtime"),
+							  Rating = series.GetDouble("Rating"),
+							  Runtime = series.GetDouble("Runtime"),
 							  TvDotComId = series.Get("SeriesID"),
 							  Name = series.Get("SeriesName"),
 							  Status = series.Get("Status"),
 							  BannerPath = series.Get("banner"),
 							  FanartPath = series.Get("fanart"),
-							  LastUpdated = series.Get<DateTime>("lastupdated"),
+							  LastUpdated = series.GetUnixDateTime("lastupdated"),
 							  PosterPath = series.Get("poster"),
 							  Zap2ItId = series.Get("zap2it_id"),
 
 							  Episodes = (from ep in xml.Descendants("Episode")
 							             where ep.HasElements
 							             select new TvDbEpisode {
-							                 Id = ep.Get<int>("id"),
+							                 Id = ep.GetInt("id"),
 							                 Directors = ep.Split("Director"),
 							                 Name = ep.Get("EpisodeName"),
-							                 Number = ep.Get<int>("EpisodeNumber"),
-							                 Aired = ep.Get<DateTime>("FirstAired"),
+							                 Number = ep.GetInt("EpisodeNumber"),
+											 Aired = ep.GetDateTime("FirstAired"),
 							                 GuestStars = ep.Split("GuestStars"),
 							                 ImDbId = ep.Get("IMDB_ID"),
 							                 Language = ep.Get("Language"),
 							                 Overview = ep.Get("Overview"),
-							                 Season = ep.Get<int>("SeasonNumber"),
+											 Season = ep.GetInt("SeasonNumber"),
 							                 Writers = ep.Split("Writer"),
-							                 AbsoluteNumber = ep.Get<int>("absolute_number"),
+											 AbsoluteNumber = ep.GetInt("absolute_number"),
 							                 Filename = ep.Get("filename"),
-							                 LastUpdated = ep.Get<DateTime>("lastupdated"),
-							                 SeasonId = ep.Get<int>("seasonid"),
-							                 SeriesId = ep.Get<int>("seriesId")
+											 LastUpdated = ep.GetUnixDateTime("lastupdated"),
+											 SeasonId = ep.GetInt("seasonid"),
+											 SeriesId = ep.GetInt("seriesId")
 							             })
 							             .ToList()
 						  };
@@ -100,9 +101,13 @@ namespace TvDb {
 			return results.Single();
 		}
 
+		public TvDbSeries Series(int id) {
+			return Series(id, false);
+		}
+
 		private XDocument DownloadXml(string request, bool zip, params object[] args) {
 			if(zip) {
-				var data = DownloadZip(request, args);
+				var data = DownloadZip(request + ".zip", args);
 				return XDocument.Parse(Encoding.UTF8.GetString(data));
 			} else {
 				var data = new WebClient().DownloadString(BuildRequestPath(request, args));

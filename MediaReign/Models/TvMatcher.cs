@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 
 namespace MediaReign.Models {
-	public class TvShowMatcher {
+	public class TvMatcher {
 
-		public ITvShowRegexRepo RegexRepo { get; set; }
+		public ITvRegexRepo RegexRepo { get; set; }
 
-		public TvShowMatch Match(string value) {
+		public TvMatch Match(string value) {
 			var clean = RegexRepo.Cleanup.Replace(value, String.Empty);
 
 			foreach(var matchreg in RegexRepo.Matches) {
@@ -33,7 +33,7 @@ namespace MediaReign.Models {
 				}
 
 				if(e.HasValue) {
-					return new TvShowMatch(show, s, e);
+					return new TvMatch(show, s, e.Value);
 				}
 			}
 
