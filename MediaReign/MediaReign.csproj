@@ -65,6 +65,7 @@
       <DependentUpon>DiscoverWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Extensions.cs" />
+    <Compile Include="Controls\AnimatedImage.cs" />
     <Compile Include="Models\ITvRegexRepo.cs" />
     <Compile Include="Models\TvRegexRepo.cs" />
     <Compile Include="Models\TvMatch.cs" />
@@ -118,6 +119,7 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\progress_circle.gif" />
     <Content Include="MediaReign.sdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

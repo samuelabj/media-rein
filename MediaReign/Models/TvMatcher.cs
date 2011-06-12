@@ -14,7 +14,7 @@ namespace MediaReign.Models {
 			foreach(var matchreg in RegexRepo.Matches) {
 				var matches = matchreg.Match(clean);
 
-				var show = matches.Groups[RegexRepo.ShowGroup].Value;
+				var show = matches.Groups[RegexRepo.SeriesGroup].Value;
 				var season = matches.Groups[RegexRepo.SeasonGroup].Value;
 				var episode = matches.Groups[RegexRepo.EpisodeGroup].Value;
 

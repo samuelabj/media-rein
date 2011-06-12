@@ -14,6 +14,7 @@ using TvDb;
 using System.IO;
 using MediaReign.Models;
 using System.ComponentModel;
+using MediaReign.Controls;
 
 namespace MediaReign {
 	/// <summary>
@@ -24,12 +25,15 @@ namespace MediaReign {
 			public string File { get; set; }
 			public TvMatch Match { get; set; }
 			public string Message { get; set; }
+			public TvDbSeries Series { get; set; }
+			public TvDbEpisode Episode { get; set; }
+			public bool IsIdle { get; set; }
 		}
+
+		private Dictionary<string, TvDbSeries> seriesCache = new Dictionary<string, TvDbSeries>(StringComparer.OrdinalIgnoreCase);
 
 		public DiscoverWindow() {
 			InitializeComponent();
-
-			FetchFiles();
 		}
 
 		protected override void OnInitialized(EventArgs e) {
@@ -43,8 +47,9 @@ namespace MediaReign {
 			matcher.RegexRepo = new TvRegexRepo();
 
 			var items = new LinkedList<TvFileItem>();
+			var files = root.GetFiles().Where(f => Settings.MediaExtensions.Any(ext => f.Name.EndsWith(ext)));
 
-			foreach(var f in root.GetFiles()) {
+			foreach(var f in files) {
 				var match = matcher.Match(f.Name);
 				if(match == null) continue;
 
@@ -78,29 +83,46 @@ namespace MediaReign {
 				i++;
 				var progress = (int)(i / (double)items.Count() * 100);
 
-				Action<string> report = (m) => {
+				Action<string, bool> report = (m, idle) => {
 					item.Message = m;
+					item.IsIdle = idle;
 					worker.ReportProgress(progress, i);
 				};
-				report("Searching TvDb");
+				report("Searching TvDb", false);
 
-				var results = tvdb.Search(item.Match.Name);
+				try {
+					TvDbSeries series;
+					if(!seriesCache.TryGetValue(item.Match.Name, out series)) {
+						var results = tvdb.Search(item.Match.Name);
 
-				if(!results.Any()) {
-					report("Found no results");
-					continue;
+						if(!results.Any()) {
+							report("Found no results", true);
+							continue;
+						}
+
+						report("Found match, getting series information", false);
+						var seriesId = results.First().Id;
+
+						if(!seriesCache.TryGetValue(seriesId.ToString(), out series)) {
+							series = tvdb.Series(seriesId);
+							seriesCache.Add(seriesId.ToString(), series);
+						}
+						seriesCache.Add(item.Match.Name, series);
+					}
+					report("Found series, looking up episode", false);
+
+					item.Series = series;
+					item.Episode = item.Series.Episodes.SingleOrDefault(ep => ep.Season == item.Match.Season && ep.Number == item.Match.Episode);
+
+					if(item.Episode == null) {
+						report("Couldn't find episode", true);
+						continue;
+					}
+
+					report(item.Episode.Name, true);
+				} catch(Exception ex) {
+					report("A problem occurred", true);
 				}
-				report("Found show, looking up episode");
-
-				var series = tvdb.Series(results.First().Id);
-				var episode = series.Episodes.SingleOrDefault(ep => ep.Season == item.Match.Season && ep.Number == item.Match.Episode);
-
-				if(episode == null) {
-					report("Couldn't find episode");
-				}
-
-				report(episode.Name);
-
 			}
 
 			e.Result = true;
@@ -109,8 +131,10 @@ namespace MediaReign {
 		void worker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
 			var item = filesListView.Items[(int)e.UserState] as TvFileItem;
 			var container = filesListView.ItemContainerGenerator.ContainerFromItem(item) as ListViewItem;
-			var status = container.FindControl<Label>("Status");
+			var status = container.FindControl<Label>("status");
 			status.Content = item.Message;
+			var progress = container.FindControl<AnimatedImage>("progress");
+			progress.Visibility = item.IsIdle ? Visibility.Hidden : Visibility.Visible;
 		}
 	}
 }

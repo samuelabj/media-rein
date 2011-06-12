@@ -10,7 +10,7 @@ namespace MediaReign.Models {
 		 Regex Cleanup { get; }
 		 Regex Separator { get; }
 
-		 string ShowGroup { get; }
+		 string SeriesGroup { get; }
 		 string SeasonGroup { get; }
 		 string EpisodeGroup { get; }
 	}

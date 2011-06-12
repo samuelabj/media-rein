@@ -10,7 +10,7 @@ namespace MediaReign {
 	public static class Extensions {
 
 		public static T FindControl<T>(this DependencyObject source, string name) where T : DependencyObject {
-			if(source is T && ((Control)source).Name == name) return source as T;
+			if(source is T && ((FrameworkElement)source).Name == name) return source as T;
 
 			for(var i = 0; i < VisualTreeHelper.GetChildrenCount(source); i++) {
 				var result = FindControl<T>(VisualTreeHelper.GetChild(source, i), name);

@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace MediaReign.Models {
 	public class TvRegexRepo : ITvRegexRepo {
-		private const string Show = @"^(?<Show>.*?)";
+		private const string Show = @"^(?<Series>.*?)";
 		private static string[] SeasonEpisode = new[] {
 			@"[\W_]+S(?<Season>\d+)E(?<Episode>\d+)",
 			@"[\W_]+(?<Season>\d+)x(?<Episode>\d+)",
@@ -24,7 +24,7 @@ namespace MediaReign.Models {
 		public Regex Cleanup { get; private set; }
 		public Regex Separator { get; private set; }
 
-		public string ShowGroup { get { return "Show"; } }
+		public string SeriesGroup { get { return "Series"; } }
 		public string SeasonGroup { get { return "Season"; } }
 		public string EpisodeGroup { get { return "Episode"; } }
 	}
