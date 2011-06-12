@@ -11,6 +11,7 @@ namespace MediaReign.Tests {
 			public string Name { get; set; }
 			public int? Season { get; set; }
 			public int Episode { get; set; }
+			public int? ToEpisode { get; set; }
 			public bool IsAbsolute { get; set; }
 			public bool IsDummy { get; set; }
 		}
@@ -75,6 +76,13 @@ namespace MediaReign.Tests {
 			new Show {
 				File = @"Spriggan.1998.x264.BDRip(720)_HDClub.mkv",
 				IsDummy = true
+			},
+			new Show {
+				File = @"30.Rock.S05E20E21.HDTV.XviD-LOL.avi",
+				Name = "30 Rock",
+				Season = 5,
+				Episode = 20,
+				ToEpisode = 21
 			}
 		};
 	}

@@ -8,10 +8,10 @@ namespace MediaReign.Models {
 	public class TvRegexRepo : ITvRegexRepo {
 		private const string Show = @"^(?<Series>.*?)";
 		private static string[] SeasonEpisode = new[] {
-			@"[\W_]+S(?<Season>\d+)E(?<Episode>\d+)",
-			@"[\W_]+(?<Season>\d+)x(?<Episode>\d+)",
-			@"[^\w(]+(?<Season>\d{1})(?<Episode>\d{2})[^\w)]",
-			@"[\W_]+?(?<Episode>\d{2})[\W_]"
+			@"[\W_]+S(?<Season>\d+)E(?<Episode>\d+)([- :]{0,2}E?(?<ToEpisode>\d+))?",
+			@"[\W_]+(?<Season>\d+)x(?<Episode>\d+)([- :]{1,2}(?<ToEpisode>\d+))?",
+			@"[^\w(]+(?<Season>\d{1})(?<Episode>\d{2})([- :]{1,2}(?<ToEpisode>\d+))?[^\w)]",
+			@"[\W_]+?(?<Episode>\d{2})([- :]{1,2}(?<ToEpisode>\d+))?[\W_]"
 		};
 
 		public TvRegexRepo() {
@@ -27,5 +27,6 @@ namespace MediaReign.Models {
 		public string SeriesGroup { get { return "Series"; } }
 		public string SeasonGroup { get { return "Season"; } }
 		public string EpisodeGroup { get { return "Episode"; } }
+		public string ToEpisodeGroup { get { return "ToEpisode"; } }
 	}
 }

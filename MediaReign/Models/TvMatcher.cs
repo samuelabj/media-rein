@@ -17,12 +17,14 @@ namespace MediaReign.Models {
 				var show = matches.Groups[RegexRepo.SeriesGroup].Value;
 				var season = matches.Groups[RegexRepo.SeasonGroup].Value;
 				var episode = matches.Groups[RegexRepo.EpisodeGroup].Value;
+				var toEpisode = matches.Groups[RegexRepo.ToEpisodeGroup].Value;
 
 				if(String.IsNullOrWhiteSpace(show)) continue;
 
 				show = RegexRepo.Separator.Replace(show, " ").Trim();
 				var s = default(int?);
 				var e = default(int?);
+				var toE = default(int?);
 
 				if(!String.IsNullOrWhiteSpace(season)) {
 					s = int.Parse(season);
@@ -32,8 +34,12 @@ namespace MediaReign.Models {
 					e = int.Parse(episode);
 				}
 
+				if(!String.IsNullOrWhiteSpace(toEpisode)) {
+					toE = int.Parse(toEpisode);
+				}
+
 				if(e.HasValue) {
-					return new TvMatch(show, s, e.Value);
+					return new TvMatch(show, s, e.Value, toE);
 				}
 			}
 

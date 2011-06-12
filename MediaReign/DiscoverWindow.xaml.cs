@@ -24,9 +24,10 @@ namespace MediaReign {
 		private class TvFileItem {
 			public string File { get; set; }
 			public TvMatch Match { get; set; }
+			public string EpisodesDisplay { get { return Match.Episode + (Match.ToEpisode.HasValue ? " - " + Match.ToEpisode : null); }}
 			public string Message { get; set; }
 			public TvDbSeries Series { get; set; }
-			public TvDbEpisode Episode { get; set; }
+			public List<TvDbEpisode> Episodes { get; set; }
 			public bool IsIdle { get; set; }
 		}
 
@@ -112,15 +113,26 @@ namespace MediaReign {
 					report("Found series, looking up episode", false);
 
 					item.Series = series;
-					item.Episode = item.Series.Episodes.SingleOrDefault(ep => ep.Season == item.Match.Season && ep.Number == item.Match.Episode);
+					item.Episodes = item.Series.Episodes.Where(ep => 
+						ep.Season == item.Match.Season 
+						&& ep.Number >= item.Match.Episode 
+						&& ep.Number <= (item.Match.ToEpisode.HasValue ? item.Match.ToEpisode.Value : item.Match.Episode))
+						.ToList();
 
-					if(item.Episode == null) {
+					if(!item.Episodes.Any()) {
 						report("Couldn't find episode", true);
 						continue;
 					}
 
-					report(item.Episode.Name, true);
-				} catch(Exception ex) {
+					report(String.Format("{0} - S{1:00}E{2:00}{3} - {4}{5}", 
+						item.Series.Name, 
+						item.Episodes.First().Season, 
+						item.Episodes.First().Number,
+ 						item.Match.ToEpisode.HasValue ? String.Format("-E{0:00}", item.Match.ToEpisode) : null,
+						String.Join(" + ", item.Episodes.Select(ep => ep.Name)), 
+						System.IO.Path.GetExtension(item.File)), true);
+
+				} catch(Exception) {
 					report("A problem occurred", true);
 				}
 			}
@@ -131,10 +143,10 @@ namespace MediaReign {
 		void worker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
 			var item = filesListView.Items[(int)e.UserState] as TvFileItem;
 			var container = filesListView.ItemContainerGenerator.ContainerFromItem(item) as ListViewItem;
-			var status = container.FindControl<Label>("status");
-			status.Content = item.Message;
+			var status = container.FindControl<TextBlock>("status");
+			status.Text = item.Message;
 			var progress = container.FindControl<AnimatedImage>("progress");
-			progress.Visibility = item.IsIdle ? Visibility.Hidden : Visibility.Visible;
+			progress.Visibility = item.IsIdle ? Visibility.Collapsed : Visibility.Visible;
 		}
 	}
 }

@@ -23,6 +23,7 @@ namespace MediaReign.Tests {
 					Assert.Equal(show.Name, match.Name, StringComparer.OrdinalIgnoreCase);
 					Assert.Equal(show.Season, match.Season);
 					Assert.Equal(show.Episode, match.Episode);
+					Assert.Equal(show.ToEpisode, match.ToEpisode);
 				}
 			}
 		}

@@ -13,5 +13,6 @@ namespace MediaReign.Models {
 		 string SeriesGroup { get; }
 		 string SeasonGroup { get; }
 		 string EpisodeGroup { get; }
+		 string ToEpisodeGroup { get; }
 	}
 }

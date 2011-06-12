@@ -12,16 +12,16 @@
 			</ListView.ItemContainerStyle>
 			<ListView.View>
 				<GridView>
-					<GridViewColumn DisplayMemberBinding="{Binding File}" Header="File" Width="200" />
-					<GridViewColumn DisplayMemberBinding="{Binding Match.Name}" Header="Show" Width="200" />
-					<GridViewColumn DisplayMemberBinding="{Binding Match.Season}" Header="Season" Width="100" />
-					<GridViewColumn DisplayMemberBinding="{Binding Match.Episode}" Header="Episode" Width="100" />
-					<GridViewColumn Header="Status" Width="300">
+					<GridViewColumn DisplayMemberBinding="{Binding File}" Header="File" Width="250" />
+					<GridViewColumn DisplayMemberBinding="{Binding Match.Name}" Header="Show" Width="150" />
+					<GridViewColumn DisplayMemberBinding="{Binding Match.Season}" Header="Season" Width="50" />
+					<GridViewColumn DisplayMemberBinding="{Binding EpisodesDisplay}" Header="Episode" Width="100" />
+					<GridViewColumn Header="Rename" Width="350">
 						<GridViewColumn.CellTemplate>
 							<DataTemplate>
 								<DockPanel>
-									<Mr:AnimatedImage Source="/MediaReign;component/Images/progress_circle.gif" x:Name="progress" HorizontalAlignment="Left" Width="10" Height="10" Visibility="Hidden" />
-									<Label Name="status" HorizontalAlignment="Left" VerticalAlignment="Top" />
+									<Mr:AnimatedImage Source="/MediaReign;component/Images/progress_circle.gif" x:Name="progress" HorizontalAlignment="Left" Width="12" Height="12" Visibility="Collapsed"  Margin="0,0,10,0" />
+									<TextBlock Name="status" HorizontalAlignment="Left" VerticalAlignment="Top" />
 								</DockPanel>					
 							</DataTemplate>
 						</GridViewColumn.CellTemplate>
