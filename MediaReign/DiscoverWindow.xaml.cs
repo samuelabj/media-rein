@@ -113,11 +113,15 @@ namespace MediaReign {
 					report("Found series, looking up episode", false);
 
 					item.Series = series;
-					item.Episodes = item.Series.Episodes.Where(ep => 
-						ep.Season == item.Match.Season 
-						&& ep.Number >= item.Match.Episode 
-						&& ep.Number <= (item.Match.ToEpisode.HasValue ? item.Match.ToEpisode.Value : item.Match.Episode))
-						.ToList();
+					if(item.Match.Season.HasValue) {
+						item.Episodes = item.Series.Episodes.Where(ep =>
+							ep.Season == item.Match.Season
+							&& ep.Number >= item.Match.Episode
+							&& ep.Number <= (item.Match.ToEpisode.HasValue ? item.Match.ToEpisode.Value : item.Match.Episode))
+							.ToList();
+					} else {
+						item.Episodes = item.Series.Episodes.Where(ep => ep.AbsoluteNumber == item.Match.Episode).ToList();
+					}
 
 					if(!item.Episodes.Any()) {
 						report("Couldn't find episode", true);

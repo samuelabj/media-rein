@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace MediaReign.Tests {
 	public class Helper {
@@ -85,5 +86,12 @@ namespace MediaReign.Tests {
 				ToEpisode = 21
 			}
 		};
+
+		public static void CreateDummyFiles() {
+			if(!Directory.Exists(Settings.FetchPath)) Directory.CreateDirectory(Settings.FetchPath);
+			foreach(var show in Shows) {
+				new FileInfo(Settings.FetchPath + @"\" + show.File).Create();
+			}
+		}
 	}
 }
