@@ -1,1 +1,37 @@
-﻿
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="MediaReign">
+  <DataContextMoniker Name="/MediaReignDataContext" />
+  <nestedChildShapes>
+    <classShape Id="5951c820-bc2f-4a4d-9ef5-d3c5ea7a8745" absoluteBounds="3.5, 1, 2, 1.1939925130208331">
+      <DataClassMoniker Name="/MediaReignDataContext/File" />
+      <nestedChildShapes>
+        <elementListCompartment Id="c0edec39-6ade-49ff-a29e-b6e6375555c8" absoluteBounds="3.515, 1.46, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="07b3066b-3526-4fa7-95d2-a45d419c6b01" absoluteBounds="6.25, 1, 2, 1.3862939453125003">
+      <DataClassMoniker Name="/MediaReignDataContext/Files_History" />
+      <nestedChildShapes>
+        <elementListCompartment Id="4db66fa5-a852-4378-8d64-20513a9e196d" absoluteBounds="6.265, 1.46, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="b0eafe83-c081-4538-b2d3-4a0df74ecf3e" absoluteBounds="0.5, 1, 2, 1.193992513020834">
+      <DataClassMoniker Name="/MediaReignDataContext/Setting" />
+      <nestedChildShapes>
+        <elementListCompartment Id="c8e9d685-92d9-4af5-8c05-975bb1fc16a7" absoluteBounds="0.515, 1.46, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(5.5 : 1.59699625651042); (6.25 : 1.59699625651042)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/MediaReignDataContext/File/File_Files_History" />
+      <nodes>
+        <classShapeMoniker Id="5951c820-bc2f-4a4d-9ef5-d3c5ea7a8745" />
+        <classShapeMoniker Id="07b3066b-3526-4fa7-95d2-a45d419c6b01" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="33e2ecbd-c597-4b7f-86fc-edcaa4280b83" absoluteBounds="3.5, 2.625, 2, 1.3862939453125">
+      <DataClassMoniker Name="/MediaReignDataContext/Series" />
+      <nestedChildShapes>
+        <elementListCompartment Id="c6cc3556-9d8e-4559-bfd0-69add7a5deac" absoluteBounds="3.515, 3.085, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>

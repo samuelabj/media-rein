@@ -1,29 +1,24 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Database Name="MediaReign" Class="MediaReignDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="MediaReign" Class="MediaReignDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Table Name="Files">
     <Type Name="File">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="SeriesId" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="Path" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
-      <Association Name="Files_History_Files" Member="Files_Histories" ThisKey="Id" OtherKey="FileId" Type="Files_History" DeleteRule="NO ACTION" />
-      <Association Name="Files_Series" Member="Series" ThisKey="SeriesId" OtherKey="Id" Type="Series" IsForeignKey="true" />
+      <Association Name="File_Files_History" Member="Files_Histories" ThisKey="Id" OtherKey="FileId" Type="Files_History" />
     </Type>
   </Table>
   <Table Name="Files_History" Member="Files_Histories">
     <Type Name="Files_History">
-      <Column Name="FileId" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="Date" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="FileId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Date" Type="System.DateTime" DbType="DateTime NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Path" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
-      <Association Name="Files_History_Files" Member="File" ThisKey="FileId" OtherKey="Id" Type="File" IsForeignKey="true" />
+      <Association Name="File_Files_History" Member="File" ThisKey="FileId" OtherKey="Id" Type="File" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="Series">
     <Type Name="Series">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="NVarChar(400) NOT NULL" CanBeNull="false" />
       <Column Name="TvDbId" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="Path" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
-      <Association Name="Files_Series" Member="Files" ThisKey="Id" OtherKey="SeriesId" Type="File" DeleteRule="NO ACTION" />
     </Type>
   </Table>
   <Table Name="Settings">

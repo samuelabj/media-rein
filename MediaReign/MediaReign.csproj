@@ -121,7 +121,7 @@
   <ItemGroup>
     <Resource Include="Images\progress_circle.gif" />
     <Content Include="MediaReign.sdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>

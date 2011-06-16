@@ -2,9 +2,9 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:Mr="clr-namespace:MediaReign.Controls"
-        Title="DiscoverWindow" Height="374" Width="850">
+        Title="DiscoverWindow" Height="414" Width="1076">
     <Grid>
-		<ListView HorizontalAlignment="Stretch" Name="filesListView" VerticalAlignment="Stretch" VirtualizingStackPanel.IsVirtualizing="False" ItemsSource="{Binding}">
+		<ListView HorizontalAlignment="Stretch" Name="filesListView" VerticalAlignment="Stretch" VirtualizingStackPanel.IsVirtualizing="False" ItemsSource="{Binding}" Margin="0,0,0,30">
 			<ListView.ItemContainerStyle>
 				<Style TargetType="ListViewItem">
 					<Setter Property="Control.HorizontalContentAlignment" Value="Stretch" />
@@ -16,7 +16,7 @@
 					<GridViewColumn DisplayMemberBinding="{Binding Match.Name}" Header="Show" Width="150" />
 					<GridViewColumn DisplayMemberBinding="{Binding Match.Season}" Header="Season" Width="50" />
 					<GridViewColumn DisplayMemberBinding="{Binding EpisodesDisplay}" Header="Episode" Width="100" />
-					<GridViewColumn Header="Rename" Width="350">
+					<GridViewColumn Header="Rename" Width="300">
 						<GridViewColumn.CellTemplate>
 							<DataTemplate>
 								<DockPanel>
@@ -26,8 +26,20 @@
 							</DataTemplate>
 						</GridViewColumn.CellTemplate>
 					</GridViewColumn>
+					<GridViewColumn Header="Save To" Width="200">
+						<GridViewColumn.CellTemplate>
+							<DataTemplate>
+								<DockPanel>
+									<TextBox Name="saveToTxt" HorizontalAlignment="Stretch" MinWidth="200" VerticalAlignment="Top" Visibility="Collapsed" />
+									<Button Name="saveToBtn" Content="Choose" HorizontalAlignment="Right" VerticalAlignment="Top" Visibility="Collapsed" />
+								</DockPanel>
+							</DataTemplate>
+						</GridViewColumn.CellTemplate>
+					</GridViewColumn>
 				</GridView>
 			</ListView.View>
 		</ListView>
+		<Button Content="Move" Height="23" HorizontalAlignment="Right" Margin="874,352,0,0" Name="moveBtn" VerticalAlignment="Bottom" Width="75" />
+		<Button Content="Rename" Height="23" HorizontalAlignment="Right" Margin="0,352,81,0" Name="renameBtn" VerticalAlignment="Bottom" Width="75" />
 	</Grid>
 </Window>

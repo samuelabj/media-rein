@@ -37,7 +37,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="FileNamesTest.cs" />
+    <Compile Include="TvMatchingFacts.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="TvDbTest.cs" />
   </ItemGroup>

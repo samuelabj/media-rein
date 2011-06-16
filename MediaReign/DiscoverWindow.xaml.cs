@@ -22,19 +22,23 @@ namespace MediaReign {
 	/// </summary>
 	public partial class DiscoverWindow : Window {
 		private class TvFileItem {
-			public string File { get; set; }
+			public FileInfo File { get; set; }
 			public TvMatch Match { get; set; }
 			public string EpisodesDisplay { get { return Match.Episode + (Match.ToEpisode.HasValue ? " - " + Match.ToEpisode : null); }}
 			public string Message { get; set; }
 			public TvDbSeries Series { get; set; }
 			public List<TvDbEpisode> Episodes { get; set; }
 			public bool IsIdle { get; set; }
+			public string FormattedName { get; set; }
 		}
 
 		private Dictionary<string, TvDbSeries> seriesCache = new Dictionary<string, TvDbSeries>(StringComparer.OrdinalIgnoreCase);
+		private LinkedList<TvFileItem> items;
 
 		public DiscoverWindow() {
 			InitializeComponent();
+			moveBtn.Click += new RoutedEventHandler(moveBtn_Click);
+			renameBtn.Click += new RoutedEventHandler(renameBtn_Click);
 		}
 
 		protected override void OnInitialized(EventArgs e) {
@@ -47,15 +51,15 @@ namespace MediaReign {
 			var matcher = new TvMatcher();
 			matcher.RegexRepo = new TvRegexRepo();
 
-			var items = new LinkedList<TvFileItem>();
-			var files = root.GetFiles().Where(f => Settings.MediaExtensions.Any(ext => f.Name.EndsWith(ext)));
+			items = new LinkedList<TvFileItem>();
+			var files = root.GetFiles().Where(f => Settings.MediaExtensions.Contains(f.Extension));
 
 			foreach(var f in files) {
 				var match = matcher.Match(f.Name);
 				if(match == null) continue;
 
 				items.AddLast(new TvFileItem { 
-					File = f.Name,
+					File = f,
 					Match = match 
 				});
 			}
@@ -66,17 +70,13 @@ namespace MediaReign {
 			worker.WorkerReportsProgress = true;
 			worker.DoWork += new DoWorkEventHandler(worker_DoWork);
 			worker.ProgressChanged += new ProgressChangedEventHandler(worker_ProgressChanged);
+			worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(worker_RunWorkerCompleted);
 
-			worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler((o, ex) => {
-				//filesListView.ItemsSource = items;
-			});
-
-			worker.RunWorkerAsync(items);
+			worker.RunWorkerAsync();
 		}
 
 		void worker_DoWork(object sender, DoWorkEventArgs e) {
 			var worker = sender as BackgroundWorker;
-			var items = e.Argument as LinkedList<TvFileItem>;
 			var tvdb = new TvDbRequest(Settings.TvDbApiKey);
 			var i = -1;
 
@@ -128,13 +128,15 @@ namespace MediaReign {
 						continue;
 					}
 
-					report(String.Format("{0} - S{1:00}E{2:00}{3} - {4}{5}", 
-						item.Series.Name, 
-						item.Episodes.First().Season, 
+					item.FormattedName = String.Format("{0} - S{1:00}E{2:00}{3} - {4}{5}",
+						item.Series.Name,
+						item.Episodes.First().Season,
 						item.Episodes.First().Number,
- 						item.Match.ToEpisode.HasValue ? String.Format("-E{0:00}", item.Match.ToEpisode) : null,
-						String.Join(" + ", item.Episodes.Select(ep => ep.Name)), 
-						System.IO.Path.GetExtension(item.File)), true);
+						item.Match.ToEpisode.HasValue ? String.Format("-E{0:00}", item.Match.ToEpisode) : null,
+						String.Join(" + ", item.Episodes.Select(ep => ep.Name)),
+						item.File.Extension);
+
+					report(item.FormattedName, true);
 
 				} catch(Exception) {
 					report("A problem occurred", true);
@@ -151,6 +153,86 @@ namespace MediaReign {
 			status.Text = item.Message;
 			var progress = container.FindControl<AnimatedImage>("progress");
 			progress.Visibility = item.IsIdle ? Visibility.Collapsed : Visibility.Visible;
+		}
+
+		void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
+			var found = items.Where(i => i.Episodes != null && i.Episodes.Any());
+			Dictionary<int, Series> seriesDict;
+			var ids = found.Select(i => i.Series.Id);
+			using(var db = DataHelper.Context()) {
+				seriesDict = db.Series.Where(s => s.TvDbId.HasValue && ids.Contains(s.TvDbId.Value)).ToDictionary(s => s.TvDbId.Value);
+			}
+			
+			foreach(var item in found) {
+				var container = filesListView.ItemContainerGenerator.ContainerFromItem(item) as ListViewItem;
+				var saveToTxt = container.FindControl<TextBox>("saveToTxt");
+				var saveToBtn = container.FindControl<Button>("saveToBtn");
+				
+				saveToBtn.Visibility = System.Windows.Visibility.Visible;
+				saveToTxt.Visibility = System.Windows.Visibility.Visible;
+
+				Series series;
+				if(seriesDict.TryGetValue(item.Series.Id, out series)) {
+					if(Directory.Exists(series.Path)) {
+						saveToTxt.Text = series.Path;
+					}
+				}
+
+				saveToBtn.Click += new RoutedEventHandler((o, args) => {
+					var dialog = new System.Windows.Forms.FolderBrowserDialog();
+
+					if(dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+						saveToTxt.Text = dialog.SelectedPath;
+					}
+				});
+			}
+		}
+
+		void renameBtn_Click(object sender, RoutedEventArgs e) {
+			throw new NotImplementedException();
+		}
+
+		void moveBtn_Click(object sender, RoutedEventArgs e) {
+			foreach(var item in items.Where(i => i.Episodes != null && i.Episodes.Any())) {
+				var container = filesListView.ItemContainerGenerator.ContainerFromItem(item) as ListViewItem;
+				var saveToTxt = container.FindControl<TextBox>("saveToTxt");
+
+				if(String.IsNullOrWhiteSpace(saveToTxt.Text)) continue;
+
+				var dir = new DirectoryInfo(saveToTxt.Text);
+				if(!dir.Exists) dir.Create();
+				if(!dir.GetFiles().Any(f => Settings.MediaExtensions.Contains(f.Extension))) {
+					dir = dir.CreateSubdirectory(item.Series.Name);
+				}
+
+				var dirPath = dir.FullName.TrimEnd(new char[] { '\\' });
+				var path = dirPath + '\\' + item.FormattedName;
+				if(System.IO.File.Exists(path)) continue;
+
+				item.File.CopyTo(path);
+
+				using(var db = DataHelper.Context()) {
+					var series = db.Series.SingleOrDefault(s => s.TvDbId == item.Series.Id);
+					if(series == null) {
+						series = new Series();
+						series.TvDbId = item.Series.Id;
+						db.Series.InsertOnSubmit(series);
+					}
+
+					series.Path = dirPath;
+
+					var file = new File();
+					file.Path = path;
+					file.Files_Histories.Add(new Files_History {
+						Date = DateTime.Now,
+						Path = item.File.FullName
+					});
+
+					db.Files.InsertOnSubmit(file);
+
+					db.SubmitChanges();
+				}
+			}
 		}
 	}
 }

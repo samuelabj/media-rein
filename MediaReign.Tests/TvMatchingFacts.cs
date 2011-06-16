@@ -8,7 +8,7 @@ using Xunit;
 using MediaReign.Models;
 
 namespace MediaReign.Tests {
-	public class FileNamesTest {
+	public class TvMatchingFacts {
 
 		[Fact]
 		public void MatchTvShows() {
