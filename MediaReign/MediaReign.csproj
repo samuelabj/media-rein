@@ -70,7 +70,7 @@
     <Compile Include="Models\TvRegexRepo.cs" />
     <Compile Include="Models\TvMatch.cs" />
     <Compile Include="Models\TvMatcher.cs" />
-    <Compile Include="Settings.cs" />
+    <Compile Include="Models\Settings.cs" />
     <Page Include="DiscoverWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -79,10 +79,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DataHelper.cs" />
+    <Compile Include="Data\DataHelper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MediaReign.designer.cs">
+    <Compile Include="Data\MediaReign.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>MediaReign.dbml</DependentUpon>
@@ -100,14 +100,14 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="MediaReign.dbml.layout">
+    <None Include="Data\MediaReign.dbml.layout">
       <DependentUpon>MediaReign.dbml</DependentUpon>
     </None>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="MediaReign.dbml">
+    <None Include="Data\MediaReign.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>
       <LastGenOutput>MediaReign.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
@@ -120,7 +120,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\progress_circle.gif" />
-    <Content Include="MediaReign.sdf">
+    <Content Include="Data\MediaReign.sdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

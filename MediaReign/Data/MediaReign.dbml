@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?><Database Name="MediaReign" Class="MediaReignDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="MediaReign" EntityNamespace="MediaReign.Data" ContextNamespace="MediaReign.Data" Class="MediaReignDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Table Name="Files">
     <Type Name="File">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -19,6 +19,14 @@
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="TvDbId" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="Path" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Association Name="Series_Series_Aliase" Member="Series_Aliases" ThisKey="Id" OtherKey="SeriesId" Type="Series_Aliase" />
+    </Type>
+  </Table>
+  <Table Name="Series_Aliases">
+    <Type Name="Series_Aliase">
+      <Column Name="SeriesId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Alias" Type="System.String" DbType="NVarChar(500) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="Series_Series_Aliase" Member="Series" ThisKey="SeriesId" OtherKey="Id" Type="Series" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="Settings">

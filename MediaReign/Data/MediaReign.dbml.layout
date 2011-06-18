@@ -33,5 +33,18 @@
         <elementListCompartment Id="c6cc3556-9d8e-4559-bfd0-69add7a5deac" absoluteBounds="3.515, 3.085, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
+    <classShape Id="b8b37a32-0dc8-49aa-ac51-7067ec8ba118" absoluteBounds="0.75, 2.625, 2, 1.1939925130208333">
+      <DataClassMoniker Name="/MediaReignDataContext/Series_Aliase" />
+      <nestedChildShapes>
+        <elementListCompartment Id="d5ba3940-8a80-4d00-af04-69041f45d3c2" absoluteBounds="0.765, 3.085, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(3.5 : 3.22199625651042); (2.75 : 3.22199625651042)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/MediaReignDataContext/Series/Series_Series_Aliase" />
+      <nodes>
+        <classShapeMoniker Id="33e2ecbd-c597-4b7f-86fc-edcaa4280b83" />
+        <classShapeMoniker Id="b8b37a32-0dc8-49aa-ac51-7067ec8ba118" />
+      </nodes>
+    </associationConnector>
   </nestedChildShapes>
 </ordesignerObjectsDiagram>

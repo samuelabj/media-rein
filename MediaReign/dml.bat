@@ -1,1 +1,0 @@
-"C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Bin\SqlMetal.exe" "C:\Users\Sam\Documents\Visual Studio 2010\Projects\MediaReign\MediaReign\MediaReign.sdf" /dbml:"C:\Users\Sam\Documents\Visual Studio 2010\Projects\MediaReign\MediaReign\MediaReign.dbml" /pluralize /context:"MediaReignDataContext"

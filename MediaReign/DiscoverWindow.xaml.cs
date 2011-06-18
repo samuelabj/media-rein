@@ -15,6 +15,7 @@ using System.IO;
 using MediaReign.Models;
 using System.ComponentModel;
 using MediaReign.Controls;
+using MediaReign.Data;
 
 namespace MediaReign {
 	/// <summary>
@@ -221,7 +222,7 @@ namespace MediaReign {
 
 					series.Path = dirPath;
 
-					var file = new File();
+					var file = new Data.File();
 					file.Path = path;
 					file.Files_Histories.Add(new Files_History {
 						Date = DateTime.Now,
@@ -229,7 +230,6 @@ namespace MediaReign {
 					});
 
 					db.Files.InsertOnSubmit(file);
-
 					db.SubmitChanges();
 				}
 			}

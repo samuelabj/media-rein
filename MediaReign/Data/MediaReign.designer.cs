@@ -9,7 +9,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MediaReign
+namespace MediaReign.Data
 {
 	using System.Data.Linq;
 	using System.Data.Linq.Mapping;
@@ -39,6 +39,9 @@ namespace MediaReign
     partial void InsertSeries(Series instance);
     partial void UpdateSeries(Series instance);
     partial void DeleteSeries(Series instance);
+    partial void InsertSeries_Aliase(Series_Aliase instance);
+    partial void UpdateSeries_Aliase(Series_Aliase instance);
+    partial void DeleteSeries_Aliase(Series_Aliase instance);
     partial void InsertSetting(Setting instance);
     partial void UpdateSetting(Setting instance);
     partial void DeleteSetting(Setting instance);
@@ -89,6 +92,14 @@ namespace MediaReign
 			get
 			{
 				return this.GetTable<Series>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Series_Aliase> Series_Aliases
+		{
+			get
+			{
+				return this.GetTable<Series_Aliase>();
 			}
 		}
 		
@@ -378,6 +389,8 @@ namespace MediaReign
 		
 		private string _Path;
 		
+		private EntitySet<Series_Aliase> _Series_Aliases;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -392,6 +405,7 @@ namespace MediaReign
 		
 		public Series()
 		{
+			this._Series_Aliases = new EntitySet<Series_Aliase>(new Action<Series_Aliase>(this.attach_Series_Aliases), new Action<Series_Aliase>(this.detach_Series_Aliases));
 			OnCreated();
 		}
 		
@@ -451,6 +465,158 @@ namespace MediaReign
 					this._Path = value;
 					this.SendPropertyChanged("Path");
 					this.OnPathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Series_Series_Aliase", Storage="_Series_Aliases", ThisKey="Id", OtherKey="SeriesId")]
+		public EntitySet<Series_Aliase> Series_Aliases
+		{
+			get
+			{
+				return this._Series_Aliases;
+			}
+			set
+			{
+				this._Series_Aliases.Assign(value);
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_Series_Aliases(Series_Aliase entity)
+		{
+			this.SendPropertyChanging();
+			entity.Series = this;
+		}
+		
+		private void detach_Series_Aliases(Series_Aliase entity)
+		{
+			this.SendPropertyChanging();
+			entity.Series = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="Series_Aliases")]
+	public partial class Series_Aliase : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _SeriesId;
+		
+		private string _Alias;
+		
+		private EntityRef<Series> _Series;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnSeriesIdChanging(int value);
+    partial void OnSeriesIdChanged();
+    partial void OnAliasChanging(string value);
+    partial void OnAliasChanged();
+    #endregion
+		
+		public Series_Aliase()
+		{
+			this._Series = default(EntityRef<Series>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SeriesId", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int SeriesId
+		{
+			get
+			{
+				return this._SeriesId;
+			}
+			set
+			{
+				if ((this._SeriesId != value))
+				{
+					if (this._Series.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnSeriesIdChanging(value);
+					this.SendPropertyChanging();
+					this._SeriesId = value;
+					this.SendPropertyChanged("SeriesId");
+					this.OnSeriesIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Alias", DbType="NVarChar(500) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
+		public string Alias
+		{
+			get
+			{
+				return this._Alias;
+			}
+			set
+			{
+				if ((this._Alias != value))
+				{
+					this.OnAliasChanging(value);
+					this.SendPropertyChanging();
+					this._Alias = value;
+					this.SendPropertyChanged("Alias");
+					this.OnAliasChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Series_Series_Aliase", Storage="_Series", ThisKey="SeriesId", OtherKey="Id", IsForeignKey=true)]
+		public Series Series
+		{
+			get
+			{
+				return this._Series.Entity;
+			}
+			set
+			{
+				Series previousValue = this._Series.Entity;
+				if (((previousValue != value) 
+							|| (this._Series.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Series.Entity = null;
+						previousValue.Series_Aliases.Remove(this);
+					}
+					this._Series.Entity = value;
+					if ((value != null))
+					{
+						value.Series_Aliases.Add(this);
+						this._SeriesId = value.Id;
+					}
+					else
+					{
+						this._SeriesId = default(int);
+					}
+					this.SendPropertyChanged("Series");
 				}
 			}
 		}
