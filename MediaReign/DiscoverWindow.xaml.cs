@@ -31,20 +31,52 @@ namespace MediaReign {
 			public List<TvDbEpisode> Episodes { get; set; }
 			public bool IsIdle { get; set; }
 			public string FormattedName { get; set; }
+			public string OverrideName { get; set; }
+			public int? OverrideSeriesId { get; set; }
 		}
 
-		private Dictionary<string, TvDbSeries> seriesCache = new Dictionary<string, TvDbSeries>(StringComparer.OrdinalIgnoreCase);
+		private Dictionary<string, int> seriesIdCache = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+		private Dictionary<int, TvDbSeries> seriesCache = new Dictionary<int, TvDbSeries>();
+		private HashSet<string> failed = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 		private LinkedList<TvFileItem> items;
 
 		public DiscoverWindow() {
 			InitializeComponent();
+
 			moveBtn.Click += new RoutedEventHandler(moveBtn_Click);
 			renameBtn.Click += new RoutedEventHandler(renameBtn_Click);
+			filesListView.Loaded += new RoutedEventHandler(filesListView_Loaded);
 		}
 
 		protected override void OnInitialized(EventArgs e) {
 			FetchFiles();
+			
 			base.OnInitialized(e);
+		}
+
+		void filesListView_Loaded(object sender, RoutedEventArgs e) {
+			foreach(var item in items) {
+				var container = filesListView.ItemContainerGenerator.ContainerFromItem(item) as ListViewItem;
+				var change = container.FindControl<Button>("seriesChangeBtn");
+				var temp = item;
+
+				change.Click += new RoutedEventHandler((o, args) => {
+					var dialog = new SpecifySeriesWindow();
+					if(dialog.ShowDialog().Value) {
+						var sameItems = items.Where(i => i.Match.Name.Equals(temp.Match.Name, StringComparison.OrdinalIgnoreCase)).ToList();
+						sameItems.ForEach(i => {
+							i.OverrideName = dialog.Name;
+							i.OverrideSeriesId = dialog.TvDbId;
+
+							var c = filesListView.ItemContainerGenerator.ContainerFromItem(i) as ListViewItem;
+							var name = container.FindControl<TextBlock>("name");
+							name.Text = i.OverrideSeriesId.ToString() ?? i.OverrideName;
+						});
+
+						ProcessFiles(sameItems);
+					}					
+				});
+			}
 		}
 
 		private void FetchFiles() {
@@ -66,19 +98,23 @@ namespace MediaReign {
 			}
 
 			filesListView.ItemsSource = items;
+			ProcessFiles(items);
+		}
 
+		void ProcessFiles(IEnumerable<TvFileItem> items) {
 			var worker = new BackgroundWorker();
 			worker.WorkerReportsProgress = true;
 			worker.DoWork += new DoWorkEventHandler(worker_DoWork);
 			worker.ProgressChanged += new ProgressChangedEventHandler(worker_ProgressChanged);
 			worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(worker_RunWorkerCompleted);
 
-			worker.RunWorkerAsync();
+			worker.RunWorkerAsync(items);
 		}
 
 		void worker_DoWork(object sender, DoWorkEventArgs e) {
 			var worker = sender as BackgroundWorker;
 			var tvdb = new TvDbRequest(Settings.TvDbApiKey);
+			var items = e.Argument as IEnumerable<TvFileItem>;
 			var i = -1;
 
 			foreach(var item in items) {
@@ -92,25 +128,51 @@ namespace MediaReign {
 				};
 				report("Searching TvDb", false);
 
-				try {
-					TvDbSeries series;
-					if(!seriesCache.TryGetValue(item.Match.Name, out series)) {
-						var results = tvdb.Search(item.Match.Name);
+				var seriesId = item.OverrideSeriesId;
+				item.OverrideSeriesId = null;
 
-						if(!results.Any()) {
+				try {
+					if(!seriesId.HasValue) {
+						var name = item.OverrideName ?? item.Match.Name;
+						item.OverrideName = null;
+
+						if(failed.Contains(name)) {
 							report("Found no results", true);
 							continue;
 						}
 
-						report("Found match, getting series information", false);
-						var seriesId = results.First().Id;
+						int sid;
+						if(!seriesIdCache.TryGetValue(name, out sid)) {
+							// Check if we've already recorded its alias
+							using(var db = DataHelper.Context()) {
+								sid = db.Series_Aliases.Where(a => a.Alias == name).Select(a => a.SeriesId).SingleOrDefault();
+							}
 
-						if(!seriesCache.TryGetValue(seriesId.ToString(), out series)) {
-							series = tvdb.Series(seriesId);
-							seriesCache.Add(seriesId.ToString(), series);
+							if(sid == default(int)) {
+								var results = tvdb.Search(name);
+
+								if(!results.Any()) {
+									failed.Add(name);
+									report("Found no results", true);
+									continue;
+								}
+
+								sid = results.First().Id;
+							}
+
+							seriesIdCache.Add(name, sid);
+							report("Found match, getting series information", false);
 						}
-						seriesCache.Add(item.Match.Name, series);
+
+						seriesId = sid;
 					}
+
+					TvDbSeries series;
+					if(!seriesCache.TryGetValue(seriesId.Value, out series)) {
+						series = tvdb.Series(seriesId.Value);
+						seriesCache.Add(seriesId.Value, series);
+					}
+
 					report("Found series, looking up episode", false);
 
 					item.Series = series;
@@ -139,7 +201,8 @@ namespace MediaReign {
 
 					report(item.FormattedName, true);
 
-				} catch(Exception) {
+				} catch(Exception ex) {
+					Console.WriteLine(ex);
 					report("A problem occurred", true);
 				}
 			}
@@ -150,25 +213,38 @@ namespace MediaReign {
 		void worker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
 			var item = filesListView.Items[(int)e.UserState] as TvFileItem;
 			var container = filesListView.ItemContainerGenerator.ContainerFromItem(item) as ListViewItem;
+			
 			var status = container.FindControl<TextBlock>("status");
-			status.Text = item.Message;
 			var progress = container.FindControl<AnimatedImage>("progress");
+			var name = container.FindControl<TextBlock>("name");
+
+			if(item.Series != null) {
+				name.Text = item.Series.Name;
+			}
+
+			status.Text = item.Message;			
 			progress.Visibility = item.IsIdle ? Visibility.Collapsed : Visibility.Visible;
 		}
 
 		void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
 			var found = items.Where(i => i.Episodes != null && i.Episodes.Any());
 			Dictionary<int, Series> seriesDict;
+			string lastPath = null;
 			var ids = found.Select(i => i.Series.Id);
+
 			using(var db = DataHelper.Context()) {
 				seriesDict = db.Series.Where(s => s.TvDbId.HasValue && ids.Contains(s.TvDbId.Value)).ToDictionary(s => s.TvDbId.Value);
 			}
 			
-			foreach(var item in found) {
+			foreach(var item in items) {
 				var container = filesListView.ItemContainerGenerator.ContainerFromItem(item) as ListViewItem;
-				var saveToTxt = container.FindControl<TextBox>("saveToTxt");
+				var saveToTxt = container.FindControl<TextBlock>("saveToTxt");
 				var saveToBtn = container.FindControl<Button>("saveToBtn");
-				
+				var seriesChangeBtn = container.FindControl<Button>("seriesChangeBtn");
+
+				seriesChangeBtn.Visibility = System.Windows.Visibility.Visible;
+
+				if(!found.Any(i => i == item)) continue;
 				saveToBtn.Visibility = System.Windows.Visibility.Visible;
 				saveToTxt.Visibility = System.Windows.Visibility.Visible;
 
@@ -181,9 +257,20 @@ namespace MediaReign {
 
 				saveToBtn.Click += new RoutedEventHandler((o, args) => {
 					var dialog = new System.Windows.Forms.FolderBrowserDialog();
+					if(lastPath != null) {
+						dialog.SelectedPath = lastPath;
+					}
 
 					if(dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 						saveToTxt.Text = dialog.SelectedPath;
+						lastPath = dialog.SelectedPath;
+
+						foreach(var i in found.Where(i => i.Series.Id == item.Series.Id)) {
+							Console.WriteLine(i.Series.Id);
+							var c = filesListView.ItemContainerGenerator.ContainerFromItem(i) as ListViewItem;
+							var s = c.FindControl<TextBlock>("saveToTxt");
+							s.Text = dialog.SelectedPath;
+						}
 					}
 				});
 			}

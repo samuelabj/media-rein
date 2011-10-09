@@ -13,7 +13,16 @@
 			<ListView.View>
 				<GridView>
 					<GridViewColumn DisplayMemberBinding="{Binding File}" Header="File" Width="250" />
-					<GridViewColumn DisplayMemberBinding="{Binding Match.Name}" Header="Show" Width="150" />
+					<GridViewColumn Header="Show" Width="150">
+						<GridViewColumn.CellTemplate>
+							<DataTemplate>
+								<DockPanel>
+									<TextBlock Name="name" Text="{Binding Match.Name}" HorizontalAlignment="Left" VerticalAlignment="Top" />
+									<Button Name="seriesChangeBtn" HorizontalAlignment="Right" Content="change" Visibility="Collapsed" />
+								</DockPanel>
+							</DataTemplate>
+						</GridViewColumn.CellTemplate>
+					</GridViewColumn>
 					<GridViewColumn DisplayMemberBinding="{Binding Match.Season}" Header="Season" Width="50" />
 					<GridViewColumn DisplayMemberBinding="{Binding EpisodesDisplay}" Header="Episode" Width="100" />
 					<GridViewColumn Header="Rename" Width="300">
@@ -30,8 +39,8 @@
 						<GridViewColumn.CellTemplate>
 							<DataTemplate>
 								<DockPanel>
-									<TextBox Name="saveToTxt" HorizontalAlignment="Stretch" MinWidth="200" VerticalAlignment="Top" Visibility="Collapsed" />
-									<Button Name="saveToBtn" Content="Choose" HorizontalAlignment="Right" VerticalAlignment="Top" Visibility="Collapsed" />
+									<TextBlock Name="saveToTxt" HorizontalAlignment="Stretch" MinWidth="100" VerticalAlignment="Top" Visibility="Collapsed" Margin="0,0,10,0" />
+									<Button Name="saveToBtn" Content="Location" HorizontalAlignment="Right" VerticalAlignment="Top" Visibility="Collapsed" />
 								</DockPanel>
 							</DataTemplate>
 						</GridViewColumn.CellTemplate>

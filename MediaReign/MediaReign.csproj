@@ -71,6 +71,9 @@
     <Compile Include="Models\TvMatch.cs" />
     <Compile Include="Models\TvMatcher.cs" />
     <Compile Include="Models\Settings.cs" />
+    <Compile Include="SpecifySeriesWindow.xaml.cs">
+      <DependentUpon>SpecifySeriesWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="DiscoverWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -80,6 +83,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Data\DataHelper.cs" />
+    <Page Include="SpecifySeriesWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\MediaReign.designer.cs">
